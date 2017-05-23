@@ -21,10 +21,22 @@ def check_program(filename):
     if failed: 
         print("Compilation Error")
 
+def decode(f):
+    dec = open('.' + f[:-4]+".dec","w")
+    with open(f) as fi:
+        for line in fi:
+            for word in line.split():
+                for letter in range(0,len(word),2):
+                    dec.write(' '.join([word if(word == ' ') else chr(int(word[letter:letter+2], 8))]))
+                dec.write(' ')
+            dec.write('\n')
+
 def run_program(exe, TEST_CASES):
     i = 0
     for test_case in TEST_CASES:
-        ipf = open(test_case[0])
+        decode(test_case[0])
+        decoded_file = '.' + test_case[0][:-3] + 'dec'
+        ipf = open(decoded_file)
         opf = open(OUTPUT_FILE, 'w')
         TLE = False
         failed = False
@@ -48,6 +60,7 @@ def run_program(exe, TEST_CASES):
          "failed" if (not diff(test_case[1], OUTPUT_FILE) or failed)
          else "passed",
          sep='\t')
+        clean_up(decoded_file)
 
 def main():
     if (len(sys.argv) < 4):
@@ -74,4 +87,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
